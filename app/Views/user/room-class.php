@@ -17,25 +17,6 @@ $this->UserModel = new UserModel();
     </div>
     <div class="pos intro-y grid grid-cols-12 gap-5 mt-5">
         <div class="col-span-12 lg:col-span-12">
-            <form action="<?= base_url(); ?>/user/streamadd/<?= encrypt_url($data_kode_kelas); ?>" method="post" enctype="multipart/form-data" class="validate-form" novalidate="novalidate">
-                <div class="grid grid-cols-12 gap-6 mt-5">
-                    <div class="intro-y col-span-12 lg:col-span-12">
-                        <!-- BEGIN: Form Layout -->
-                        <div class="intro-y box p-5">
-                            <div class="mt-3">
-                                <textarea class="input w-full border mt-2" wrap="hard" name="stream_text" placeholder="Share Something with your class" required="" style="margin-top: 8px; margin-bottom: 0px; height: 87px;"></textarea>
-                            </div>
-                            <div class="mt-3">
-                                <input type="hidden" id="random_code" name="stream_kode">
-                                <input type="hidden" id="kelas_id" name="kelas_id" value="<?= $kelas->id_kelas; ?>">
-                                <input type="file" name="stream_file[]" style="width: 265px;" class="input border mt-2 flex" multiple>
-                            </div>
-                            <button type="submit" class="button w-24 bg-theme-1 text-white mt-3">Send</button>
-                        </div>
-                        <!-- END: Form Layout -->
-                    </div>
-                </div>
-            </form>
             <?php
             $accordion = 1;
             $id_kelas = 1;
