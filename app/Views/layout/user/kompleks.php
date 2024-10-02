@@ -199,6 +199,13 @@
                     <div class="top-menu__title"> Exam</div>
                 </a>
             </li>
+            <li>
+<!--                <a href="<?= base_url(); ?>/user/anggota/<?= encrypt_url($data_kode_kelas); ?>" class="top-menu <?= $topanggota; ?>"> -->
+                <a href="" class="top-menu <?= $topanggota; ?>">
+                    <div class="top-menu__icon"> <i data-feather="users"></i> </div>
+                    <div class="top-menu__title"> Anggota</div>
+                </a>
+            </li>
         </ul>
     </nav>
     <!-- END: Top Menu -->
