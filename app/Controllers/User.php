@@ -441,6 +441,7 @@ class User extends BaseController
                 'topclases' => 'top-menu--active',
                 'topmaterials' => '',
                 'topassignment' => '',
+                'topanggota' => '',
                 'assignments' => '',
                 'topexam' => '',
                 'exam' => '',
@@ -473,6 +474,7 @@ class User extends BaseController
                 'topclases' => 'top-menu--active',
                 'topmaterials' => '',
                 'topassignment' => '',
+                'topanggota' => '',
                 'assignments' => '',
                 'topexam' => '',
                 'exam' => '',
@@ -602,6 +604,7 @@ class User extends BaseController
                 'assignments' => '',
                 'topassignment' => '',
                 'topexam' => '',
+                'topanggota' => '',
                 'exam' => '',
                 'profile' => '',
                 'topprofile' => '',
@@ -632,6 +635,7 @@ class User extends BaseController
                 'assignments' => '',
                 'topassignment' => '',
                 'topexam' => '',
+                'topanggota' => '',
                 'exam' => '',
                 'profile' => '',
                 'topprofile' => '',
@@ -697,6 +701,7 @@ class User extends BaseController
             'topclases' => '',
             'topmaterials' => 'top-menu--active',
             'topassignment' => '',
+            'topanggota' => '',
             'assignments' => '',
             'topexam' => '',
             'exam' => '',
@@ -774,6 +779,7 @@ class User extends BaseController
                 'assignments' => 'menu--active',
                 'topassignment' => 'top-menu--active',
                 'topexam' => '',
+                'topanggota' => '',
                 'exam' => '',
                 'profile' => '',
                 'topprofile' => '',
@@ -804,6 +810,7 @@ class User extends BaseController
                 'assignments' => 'menu--active',
                 'topassignment' => 'top-menu--active',
                 'topexam' => '',
+                'topanggota' => '',
                 'exam' => '',
                 'profile' => '',
                 'topprofile' => '',
@@ -873,6 +880,7 @@ class User extends BaseController
                 'assignments' => 'menu--active',
                 'topassignment' => 'top-menu--active',
                 'topexam' => '',
+                'topanggota' => '',
                 'exam' => '',
                 'profile' => '',
                 'topprofile' => '',
@@ -1009,6 +1017,7 @@ class User extends BaseController
                 'assignments' => '',
                 'topassignment' => '',
                 'topexam' => 'top-menu--active',
+                'topanggota' => '',
                 'exam' => 'menu--active',
                 'profile' => '',
                 'topprofile' => '',
@@ -1038,6 +1047,7 @@ class User extends BaseController
                 'assignments' => '',
                 'topassignment' => '',
                 'topexam' => 'top-menu--active',
+                'topanggota' => '',
                 'exam' => 'menu--active',
                 'profile' => '',
                 'topprofile' => '',
@@ -1105,6 +1115,7 @@ class User extends BaseController
                 'assignments' => '',
                 'topassignment' => '',
                 'topexam' => 'top-menu--active',
+                'topanggota' => '',
                 'exam' => 'menu--active',
                 'profile' => '',
                 'topprofile' => '',
@@ -1322,6 +1333,7 @@ class User extends BaseController
                 'assignments' => '',
                 'topassignment' => '',
                 'topexam' => 'top-menu--active',
+                'topanggota'=> '',
                 'exam' => 'menu--active',
                 'profile' => '',
                 'topprofile' => '',
@@ -1450,4 +1462,33 @@ class User extends BaseController
         return redirect()->to('user/showessay?data=' . encrypt_url($kode_ujian) . '&kelas=' . encrypt_url($kode_kelas));
     }
     // END :: UJIAN
+
+    // START :: ANGGOTA
+    public function anggota($kode_kelas = '')
+    {
+              // DATA MENU
+        $data = [
+            'breadcrumb1' => 'User',
+            'breadcrumb2' => 'Materials &raquo; Show Material',
+            'dashboard' => '',
+            'clases' => 'menu--active',
+            'materials' => 'menu--active',
+            'topdashboard' => '',
+            'topclases' => '',
+            'topmaterials' => 'top-menu--active',
+            'topassignment' => '',
+            'topanggota' => '',
+            'assignments' => '',
+            'topexam' => '',
+            'exam' => '',
+            'profile' => '',
+            'topprofile' => '',
+            'data_kode_kelas' => $kode_kelas
+        ];
+        // END DATA MENU
+
+
+      return view('super_user/anggota', $data);
+    }
+    // END :: ANGGOTA
 }
