@@ -1467,6 +1467,11 @@ class User extends BaseController
     public function anggota($kode_kelas = '')
     {
         $kode_kelas = decrypt_url($kode_kelas);
+        $pengajar = $this->KelasModel
+            ->where('kode_kelas', $kode_kelas)
+            ->get()->getResultObject();
+
+        $pelajar = $this->UserkelasModel->getAllStudentsByClass($kode_kelas);
         // CEK APAKAH KELAS TERSEBUT ADALAH KELAS YANG DIA BUAT
         $kelas_saya = $this->KelasModel
             ->where('kode_kelas', $kode_kelas)
@@ -1492,7 +1497,9 @@ class User extends BaseController
                 'exam' => '',
                 'profile' => '',
                 'topprofile' => '',
-                'data_kode_kelas' => $kode_kelas
+                'data_kode_kelas' => $kode_kelas,
+                'pengajar' => $pengajar,
+                'pelajar' => $pelajar
             ];
             // End Menu
             $data['judul'] = 'Ruang Belajar By BELIBIS | Room Class';
@@ -1500,8 +1507,6 @@ class User extends BaseController
             $data['myclass'] = $this->KelasModel->getMyClass(session()->get('email'));
             $data['classes'] = $this->UserkelasModel->getMyClass(session()->get('email'));
             $data['kelas'] = $kelas_saya;
-            $data['data_stream'] = $this->StreamModel->getStreamByClass($kelas_saya->id_kelas);
-            $data['file_stream'] = $this->FilestreamModel->asObject()->findAll();
 
             return view('super_user/anggota', $data);
         }
@@ -1525,7 +1530,9 @@ class User extends BaseController
                 'exam' => '',
                 'profile' => '',
                 'topprofile' => '',
-                'data_kode_kelas' => $kode_kelas
+                'data_kode_kelas' => $kode_kelas,
+                'pengajar' => $pengajar,
+                'pelajar' => $pelajar
             ];
             // End Menu
             $data['judul'] = 'Ruang Belajar By BELIBIS | Room Class';
@@ -1533,8 +1540,7 @@ class User extends BaseController
             $data['myclass'] = $this->KelasModel->getMyClass(session()->get('email'));
             $data['classes'] = $this->UserkelasModel->getMyClass(session()->get('email'));
             $data['kelas'] = $kelas_saya;
-            $data['data_stream'] = $this->StreamModel->getStreamByClass($kelas_saya->id_kelas);
-            $data['file_stream'] = $this->FilestreamModel->asObject()->findAll();
+
             return view('user/anggota', $data);
         }
          
