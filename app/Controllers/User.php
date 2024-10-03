@@ -1466,29 +1466,103 @@ class User extends BaseController
     // START :: ANGGOTA
     public function anggota($kode_kelas = '')
     {
-              // DATA MENU
-        $data = [
-            'breadcrumb1' => 'User',
-            'breadcrumb2' => 'Materials &raquo; Show Material',
-            'dashboard' => '',
-            'clases' => 'menu--active',
-            'materials' => 'menu--active',
-            'topdashboard' => '',
-            'topclases' => '',
-            'topmaterials' => 'top-menu--active',
-            'topassignment' => '',
-            'topanggota' => '',
-            'assignments' => '',
-            'topexam' => '',
-            'exam' => '',
-            'profile' => '',
-            'topprofile' => '',
-            'data_kode_kelas' => $kode_kelas
-        ];
-        // END DATA MENU
+        $kode_kelas = decrypt_url($kode_kelas);
+        // CEK APAKAH KELAS TERSEBUT ADALAH KELAS YANG DIA BUAT
+        $kelas_saya = $this->KelasModel
+            ->where('kode_kelas', $kode_kelas)
+            ->where('email_user', session()->get('email'))
+            ->get()->getRowObject();
+        if ($kelas_saya != null) {
+            // JIKA INI KELAS YANG DI BUAT,MAKA ARAHKAN KE HALAMAN SUPER USER
 
+            // Begin Menu
+            $data = [
+                'breadcrumb1' => 'User',
+                'breadcrumb2' => 'Class &raquo; ' . $kelas_saya->mapel . ' ' . $kelas_saya->nama_kelas,
+                'dashboard' => '',
+                'clases' => 'menu--active',
+                'materials' => '',
+                'topdashboard' => '',
+                'topclases' => '',
+                'topmaterials' => '',
+                'topassignment' => '',
+                'topanggota' => 'top-menu--active',
+                'assignments' => '',
+                'topexam' => '',
+                'exam' => '',
+                'profile' => '',
+                'topprofile' => '',
+                'data_kode_kelas' => $kode_kelas
+            ];
+            // End Menu
+            $data['judul'] = 'Ruang Belajar By BELIBIS | Room Class';
+            $data['user'] = $this->UserModel->getuser(session()->get('email'));
+            $data['myclass'] = $this->KelasModel->getMyClass(session()->get('email'));
+            $data['classes'] = $this->UserkelasModel->getMyClass(session()->get('email'));
+            $data['kelas'] = $kelas_saya;
+            $data['data_stream'] = $this->StreamModel->getStreamByClass($kelas_saya->id_kelas);
+            $data['file_stream'] = $this->FilestreamModel->asObject()->findAll();
 
-      return view('super_user/anggota', $data);
+            return view('super_user/anggota', $data);
+        }
+
+        $kelas_saya = $this->UserkelasModel->getMyClassByCodeAndEmail($kode_kelas, session()->get('email'));
+        if ($kelas_saya != null) {
+            // Begin Menu
+            $data = [
+                'breadcrumb1' => 'User',
+                'breadcrumb2' => 'Class &raquo; ' . $kelas_saya->mapel . ' ' . $kelas_saya->nama_kelas,
+                'dashboard' => '',
+                'clases' => '',
+                'materials' => '',
+                'topdashboard' => '',
+                'topclases' => 'top-menu--active',
+                'topmaterials' => '',
+                'topassignment' => '',
+                'topanggota' => 'menu--active',
+                'assignments' => '',
+                'topexam' => '',
+                'exam' => '',
+                'profile' => '',
+                'topprofile' => '',
+                'data_kode_kelas' => $kode_kelas
+            ];
+            // End Menu
+            $data['judul'] = 'Ruang Belajar By BELIBIS | Room Class';
+            $data['user'] = $this->UserModel->getuser(session()->get('email'));
+            $data['myclass'] = $this->KelasModel->getMyClass(session()->get('email'));
+            $data['classes'] = $this->UserkelasModel->getMyClass(session()->get('email'));
+            $data['kelas'] = $kelas_saya;
+            $data['data_stream'] = $this->StreamModel->getStreamByClass($kelas_saya->id_kelas);
+            $data['file_stream'] = $this->FilestreamModel->asObject()->findAll();
+            return view('user/anggota', $data);
+        }
+         
+        echo "ERROr";
+        var_dump($kelas_saya);
+       exit(); 
+            $data = [
+                'breadcrumb1' => 'User',
+              //  'breadcrumb2' => 'Class &raquo; ' . $kelas_saya->mapel . ' ' . $kelas_saya->nama_kelas,
+                'dashboard' => '',
+                'clases' => 'menu--active',
+                'materials' => '',
+                'topdashboard' => '',
+                'topclases' => 'top-menu--active',
+                'topmaterials' => '',
+                'topassignment' => '',
+                'topanggota' => '',
+                'assignments' => '',
+                'topexam' => '',
+                'exam' => '',
+                'profile' => '',
+                'topprofile' => '',
+               // 'data_kode_kelas' => $kelas_kode
+            ];
+        $data['myclass'] = $this->KelasModel->getMyClass(session()->get('email'));
+        $data['classes'] = $this->UserkelasModel->getMyClass(session()->get('email'));
+        $data['data_kode_kelas'] = $kode_kelas;
+        return view('super_user/anggota', $data);
     }
     // END :: ANGGOTA
 }
