@@ -3,6 +3,29 @@
 <?= session()->getFlashdata('pesan'); ?>
 
 <div class="content">
+
+    <div class="pos intro-y grid grid-cols-12 gap-5">
+        <div class="col-span-12 lg:col-span-12">
+            <div class="grid grid-cols-12 gap-6">
+                <div class="col-span-12 lg:col-span-12">
+                    <div class="box mt-5">
+                        <div class="intro-y news p-5 box mt-8">
+                            <?php foreach ($pengajar as $p): ?>
+                                <?= $p->nama_user ?>
+                                <?= $p->email_user ?>
+                            <?php endforeach ?>
+
+                            <?php foreach ($pelajar as $p): ?>
+                                <?= $p->nama ?>
+                                <?= $p->email ?>
+                            <?php endforeach ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 <!-- END: Content -->
 <script>
