@@ -34,4 +34,10 @@ class UserkelasModel extends Model
             ->where('user_kelas.kelas_kode', $kelas_kode)
             ->get()->getResultObject();
     }
+
+    public function getAllStudentsByClass($kelas_kode) {
+        return $this
+            ->where('user_kelas.kelas_kode', $kelas_kode)
+            ->get()->getResultObject();
+    }
 }
