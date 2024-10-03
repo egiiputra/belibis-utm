@@ -270,6 +270,7 @@ class Su extends BaseController
                 'assignments' => '',
                 'topassignment' => '',
                 'topexam' => '',
+                'topanggota' => '',
                 'exam' => '',
                 'profile' => '',
                 'topprofile' => '',
