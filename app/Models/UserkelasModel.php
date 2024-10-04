@@ -36,8 +36,12 @@ class UserkelasModel extends Model
     }
 
     public function getAllStudentsByClass($kelas_kode) {
-        return $this
-            ->where('user_kelas.kelas_kode', $kelas_kode)
-            ->get()->getResultObject();
+        return $this->db
+            ->query(
+                "SELECT user.email, user.nama, user.gambar 
+                FROM user_kelas INNER JOIN user 
+                ON user_kelas.email=user.email 
+                WHERE user_kelas.kelas_kode='$kelas_kode'
+            ")->getResultObject();
     }
 }
