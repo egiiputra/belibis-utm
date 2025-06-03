@@ -23,6 +23,8 @@ use App\Models\PgsiswaModel;
 use App\Models\PgwaktusiswaModel;
 use App\Models\EssaywaktusiswaModel;
 
+use App\Controllers\Auth;
+
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Reader\Xls;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
@@ -75,6 +77,7 @@ class Su extends BaseController
         $this->PgsiswaModel = new PgsiswaModel();
         $this->PgwaktusiswaModel = new PgwaktusiswaModel();
         $this->EssaywaktusiswaModel = new EssaywaktusiswaModel();
+        $this->Auth = new Auth();
         date_default_timezone_set('Asia/Jakarta');
     }
     public function hapus_kelas($data_kode_kelas = '')
@@ -252,10 +255,7 @@ class Su extends BaseController
         }
 
         // CEK APAKAH KELAS TERSEBUT ADALAH KELAS YANG DIA BUAT
-        $kelas_saya = $this->KelasModel
-            ->where('kode_kelas', $kelas_kode)
-            ->where('email_user', session()->get('email'))
-            ->get()->getRowObject();
+        [ $is_pengajar, $kelas_saya ] = $this->Auth->isUserPengajar(session()->get('email'), $kelas_kode);
 
         if ($kelas_saya != null) {
             $data = [
@@ -692,12 +692,9 @@ class Su extends BaseController
         }
 
         // CEK APAKAH KELAS TERSEBUT ADALAH KELAS YANG DIA BUAT
-        $kelas_saya = $this->KelasModel
-            ->where('kode_kelas', $kelas_kode)
-            ->where('email_user', session()->get('email'))
-            ->get()->getRowObject();
+        [ $is_pengajar, $kelas_saya ] = $this->Auth->isUserPengajar(session()->get('email'), $kelas_kode);
 
-        if ($kelas_saya != null) {
+        if ($is_pengajar) {
             $data = [
                 'breadcrumb1' => 'User',
                 'breadcrumb2' => 'Assignments &raquo; Add Assignment &raquo; ' . $kelas_saya->mapel . ' ' . $kelas_saya->nama_kelas,
@@ -763,10 +760,8 @@ class Su extends BaseController
         }
 
         // CEK APAKAH KELAS TERSEBUT ADALAH KELAS YANG DIA BUAT
-        $kelas_saya = $this->KelasModel
-            ->where('kode_kelas', $kelas_kode)
-            ->where('email_user', session()->get('email'))
-            ->get()->getRowObject();
+        [ $is_pengajar, $kelas_saya ] = $this->Auth->isUserPengajar(session()->get('email'), $kelas_kode);
+
         if ($kelas_saya == null) {
             session()->setFlashdata(
                 'pesan',
@@ -935,10 +930,7 @@ class Su extends BaseController
         }
 
         // CEK APAKAH KELAS TERSEBUT ADALAH KELAS YANG DIA BUAT
-        $kelas_saya = $this->KelasModel
-            ->where('kode_kelas', $kode_kelas)
-            ->where('email_user', session()->get('email'))
-            ->get()->getRowObject();
+        [ $is_pengajar, $kelas_saya ] = $this->Auth->isUserPengajar(session()->get('email'), $kelas_kode);
 
         if ($kelas_saya != null) {
             $data = [
@@ -1337,12 +1329,9 @@ class Su extends BaseController
         }
 
         // CEK APAKAH KELAS TERSEBUT ADALAH KELAS YANG DIA BUAT
-        $kelas_saya = $this->KelasModel
-            ->where('kode_kelas', $kelas_kode)
-            ->where('email_user', session()->get('email'))
-            ->get()->getRowObject();
+        [ $is_pengajar, $kelas_saya ] = $this->Auth->isUserPengajar(session()->get('email'), $kelas_kode);
 
-        if ($kelas_saya != null) {
+        if ($is_pengajar) {
             $data = [
                 'breadcrumb1' => 'User',
                 'breadcrumb2' => 'Exam &raquo; Add Exam &raquo;' . $kelas_saya->mapel . ' ' . $kelas_saya->nama_kelas,
@@ -1430,12 +1419,9 @@ class Su extends BaseController
         }
 
         // CEK APAKAH KELAS TERSEBUT ADALAH KELAS YANG DIA BUAT
-        $kelas_saya = $this->KelasModel
-            ->where('kode_kelas', $kelas_kode)
-            ->where('email_user', session()->get('email'))
-            ->get()->getRowObject();
+        [ $is_pengajar, $kelas_saya ] = $this->Auth->isUserPengajar(session()->get('email'), $kelas_kode);
 
-        if ($kelas_saya != null) {
+        if ($is_pengajar) {
             // DATA UJIAN
             $kode_ujian = random_string('alnum', 10);
             $data_ujian = [
@@ -2059,12 +2045,9 @@ class Su extends BaseController
         }
 
         // CEK APAKAH KELAS TERSEBUT ADALAH KELAS YANG DIA BUAT
-        $kelas_saya = $this->KelasModel
-            ->where('kode_kelas', $kelas_kode)
-            ->where('email_user', session()->get('email'))
-            ->get()->getRowObject();
+        [ $is_pengajar, $kelas_saya ] = $this->Auth->isUserPengajar(session()->get('email'), $kelas_kode);
 
-        if ($kelas_saya != null) {
+        if ($is_pengajar) {
             $data = [
                 'breadcrumb1' => 'User',
                 'breadcrumb2' => 'Exam &raquo; Add Exam &raquo;' . $kelas_saya->mapel . ' ' . $kelas_saya->nama_kelas,
@@ -2152,12 +2135,9 @@ class Su extends BaseController
         }
 
         // CEK APAKAH KELAS TERSEBUT ADALAH KELAS YANG DIA BUAT
-        $kelas_saya = $this->KelasModel
-            ->where('kode_kelas', $kelas_kode)
-            ->where('email_user', session()->get('email'))
-            ->get()->getRowObject();
+        [ $is_pengajar, $kelas_saya ] = $this->Auth->isUserPengajar(session()->get('email'), $kelas_kode);
 
-        if ($kelas_saya != null) {
+        if ($is_pengajar) {
             // DATA UJIAN
             $kode_ujian = random_string('alnum', 10);
             $data_ujian = [
@@ -2605,4 +2585,63 @@ class Su extends BaseController
         }
     }
     // END :: SUMMERNOTE
+
+    // START :: INVITE TEACHER
+    public function invite_teacher()
+    {
+        // RETURN OBJ (status, message, content(html))
+        // CEK APAKAH TERDAPAT PENGGUNA DENGAN EMAIL TERSEBUT
+        $kode_kelas = decrypt_url($this->request->getVar('kode_kelas'));
+        $email = $this->request->getVar('email_pengajar');
+        $user = $this->UserModel->getuser($email);
+        if ($user == null) {
+            return json_encode(
+                array(
+                    'status' => 404,
+                    'message'=> "Pengguna dengan email $email tidak ditemukan",
+                    'content' => null
+                )
+            );
+        }
+
+        $result = $this->UserkelasModel->addMember($kode_kelas, $email, $user->nama, 'pengajar');
+        if (!$result) { // Pengajar sudah ditambahkan
+            return json_encode(
+                array(
+                    'status' => 404,
+                    'message'=> "Pengguna dengan email $email sudah ditambahkan",
+                    'content' => null
+                )
+            );
+        }
+        $data['pengajar'] = array();
+        $pemilik_kelas =  $this->KelasModel
+            ->where('kode_kelas', $kode_kelas)
+            ->get()->getResultObject();
+
+        foreach ($pemilik_kelas as $p) {
+            $data['pengajar'][] = (object) array(
+                'gambar_user' => $p->gambar_user,
+                'nama_user' => $p->nama_user,
+                'email_user' => $p->email_user
+            );
+        }
+        $pengajar_kelas = $this->UserkelasModel->getAllTeachersByClass($kode_kelas);
+
+        foreach ($pengajar_kelas as $p) {
+            $data['pengajar'][] = (object) array(
+                'gambar_user' => $p->gambar,
+                'nama_user' => $p->nama,
+                'email_user' => $p->email
+            );
+        }
+        return json_encode(
+            array(
+                'status' => 201,
+                'message'=> "Pengajar berhasil ditambahkan",
+                'content' => View('super_user/list-pengajar', $data)
+            )
+        );
+    }
+    // END :: INVITE TEACHE
 }

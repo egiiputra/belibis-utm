@@ -8,7 +8,7 @@ class UserkelasModel extends Model
 {
     protected $table = 'user_kelas';
     protected $primaryKey = 'id_user_kelas';
-    protected $allowedFields = ['kelas_kode', 'email', 'nama'];
+    protected $allowedFields = ['kelas_kode', 'email', 'nama', 'role'];
 
     public function getMyClass($email)
     {
@@ -41,7 +41,37 @@ class UserkelasModel extends Model
                 "SELECT user.email, user.nama, user.gambar 
                 FROM user_kelas INNER JOIN user 
                 ON user_kelas.email=user.email 
-                WHERE user_kelas.kelas_kode='$kelas_kode'
+                WHERE user_kelas.kelas_kode='$kelas_kode' AND user_kelas.role='pelajar'
             ")->getResultObject();
+    }
+
+    public function getAllTeachersByClass($kelas_kode) {
+        return $this->db
+            ->query(
+                "SELECT user.email, user.nama, user.gambar 
+                FROM user_kelas INNER JOIN user 
+                ON user_kelas.email=user.email 
+                WHERE user_kelas.kelas_kode='$kelas_kode' AND user_kelas.role='pengajar'
+            ")->getResultObject();
+    }
+
+    public function addMember($kelas_kode, $email, $nama, $role) {
+        // Return false if user is already in a class
+        $tmp = $this->db
+            ->query(
+                "SELECT user.email, user.nama, user.gambar 
+                FROM user_kelas INNER JOIN user 
+                ON user_kelas.email=user.email 
+                WHERE user_kelas.kelas_kode='$kelas_kode' AND user_kelas.email='$email'
+                ")->getResultObject();
+        if ($tmp) {
+            return false;
+        }
+        return $this->insert(array(
+            'kelas_kode' => $kelas_kode,
+            'email' => $email,
+            'nama' => $nama,
+            'role' => $role
+        ), false);
     }
 }

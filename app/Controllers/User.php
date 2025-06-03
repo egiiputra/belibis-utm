@@ -20,6 +20,8 @@ use App\Models\PgsiswaModel;
 use App\Models\PgwaktusiswaModel;
 use App\Models\EssaywaktusiswaModel;
 
+use App\Controllers\Auth;
+
 class User extends BaseController
 {
     protected $UserModel;
@@ -62,6 +64,7 @@ class User extends BaseController
         $this->PgsiswaModel = new PgsiswaModel();
         $this->PgwaktusiswaModel = new PgwaktusiswaModel();
         $this->EssaywaktusiswaModel = new EssaywaktusiswaModel();
+        $this->Auth = new Auth();
         date_default_timezone_set('Asia/Jakarta');
     }
 
@@ -422,12 +425,8 @@ class User extends BaseController
             return redirect()->to('user');
         }
 
-        // CEK APAKAH KELAS TERSEBUT ADALAH KELAS YANG DIA BUAT
-        $kelas_saya = $this->KelasModel
-            ->where('kode_kelas', $kelas_kode)
-            ->where('email_user', session()->get('email'))
-            ->get()->getRowObject();
-        if ($kelas_saya != null) {
+        [ $is_pengajar, $kelas_saya ] = $this->Auth->isUserPengajar(session()->get('email'), $kelas_kode);
+        if ($is_pengajar) {
             // JIKA INI KELAS YANG DI BUAT,MAKA ARAHKAN KE HALAMAN SUPER USER
 
             // Begin Menu
@@ -461,7 +460,6 @@ class User extends BaseController
             return view('super_user/room-class', $data);
         }
 
-        $kelas_saya = $this->UserkelasModel->getMyClassByCodeAndEmail($kelas_kode, session()->get('email'));
         if ($kelas_saya != null) {
             // Begin Menu
             $data = [
@@ -585,13 +583,8 @@ class User extends BaseController
             return redirect()->to('user');
         }
 
-        // CEK APAKAH KELAS TERSEBUT ADALAH KELAS YANG DIA BUAT
-        $kelas_saya = $this->KelasModel
-            ->where('kode_kelas', $kelas_kode)
-            ->where('email_user', session()->get('email'))
-            ->get()->getRowObject();
-
-        if ($kelas_saya != null) {
+        [ $is_pengajar, $kelas_saya ] = $this->Auth->isUserPengajar(session()->get('email'), $kelas_kode);
+        if ($is_pengajar) {
             $data = [
                 'breadcrumb1' => 'User',
                 'breadcrumb2' => 'Materials &raquo; ' . $kelas_saya->mapel . ' ' . $kelas_saya->nama_kelas,
@@ -621,7 +614,6 @@ class User extends BaseController
             return view('super_user/materi', $data);
         }
 
-        $kelas_saya = $this->UserkelasModel->getMyClassByCodeAndEmail($kelas_kode, session()->get('email'));
         if ($kelas_saya != null) {
             $data = [
                 'breadcrumb1' => 'User',
@@ -760,13 +752,8 @@ class User extends BaseController
             return redirect()->to('user');
         }
 
-        // CEK APAKAH KELAS TERSEBUT ADALAH KELAS YANG DIA BUAT
-        $kelas_saya = $this->KelasModel
-            ->where('kode_kelas', $kelas_kode)
-            ->where('email_user', session()->get('email'))
-            ->get()->getRowObject();
-
-        if ($kelas_saya != null) {
+        [ $is_pengajar, $kelas_saya ] = $this->Auth->isUserPengajar(session()->get('email'), $kelas_kode);
+        if ($is_pengajar) {
             $data = [
                 'breadcrumb1' => 'User',
                 'breadcrumb2' => 'Assignments &raquo; ' . $kelas_saya->mapel . ' ' . $kelas_saya->nama_kelas,
@@ -796,7 +783,6 @@ class User extends BaseController
             return view('super_user/tugas', $data);
         }
 
-        $kelas_saya = $this->UserkelasModel->getMyClassByCodeAndEmail($kelas_kode, session()->get('email'));
         if ($kelas_saya != null) {
             $data = [
                 'breadcrumb1' => 'User',
@@ -998,13 +984,8 @@ class User extends BaseController
             return redirect()->to('user');
         }
 
-        // CEK APAKAH KELAS TERSEBUT ADALAH KELAS YANG DIA BUAT
-        // JIKA IYA, MAKA ARAHKAN KE HALAMAN SUPER USER
-        $kelas_saya = $this->KelasModel
-            ->where('kode_kelas', $kelas_kode)
-            ->where('email_user', session()->get('email'))
-            ->get()->getRowObject();
-        if ($kelas_saya != null) {
+        [ $is_pengajar, $kelas_saya ] = $this->Auth->isUserPengajar(session()->get('email'), $kelas_kode);
+        if ($is_pengajar) {
             $data = [
                 'breadcrumb1' => 'User',
                 'breadcrumb2' => 'Exam &raquo; ' . $kelas_saya->mapel . ' ' . $kelas_saya->nama_kelas,
@@ -1033,7 +1014,6 @@ class User extends BaseController
             return view('super_user/ujian', $data);
         }
 
-        $kelas_saya = $this->UserkelasModel->getMyClassByCodeAndEmail($kelas_kode, session()->get('email'));
         if ($kelas_saya != null) {
             $data = [
                 'breadcrumb1' => 'User',
@@ -1467,10 +1447,28 @@ class User extends BaseController
     public function anggota($kode_kelas = '')
     {
         $kode_kelas = decrypt_url($kode_kelas);
-        $pengajar = $this->KelasModel
+        $pemilik_kelas = $this->KelasModel
             ->where('kode_kelas', $kode_kelas)
             ->get()->getResultObject();
 
+        $pengajar = array();
+        foreach ($pemilik_kelas as $p) {
+            $pengajar[] = (object) array(
+                'gambar_user' => $p->gambar_user,
+                'nama_user' => $p->nama_user,
+                'email_user' => $p->email_user
+            );
+        }
+
+        $pengajar_kelas = $this->UserkelasModel->getAllTeachersByClass($kode_kelas);
+
+        foreach ($pengajar_kelas as $p) {
+            $pengajar[] = (object) array(
+                'gambar_user' => $p->gambar,
+                'nama_user' => $p->nama,
+                'email_user' => $p->email
+            );
+        }
         $pelajar = $this->UserkelasModel->getAllStudentsByClass($kode_kelas);
         // CEK APAKAH KELAS TERSEBUT ADALAH KELAS YANG DIA BUAT
         $kelas_saya = $this->KelasModel
@@ -1543,32 +1541,6 @@ class User extends BaseController
 
             return view('user/anggota', $data);
         }
-         
-        echo "ERROr";
-        var_dump($kelas_saya);
-       exit(); 
-            $data = [
-                'breadcrumb1' => 'User',
-              //  'breadcrumb2' => 'Class &raquo; ' . $kelas_saya->mapel . ' ' . $kelas_saya->nama_kelas,
-                'dashboard' => '',
-                'clases' => 'menu--active',
-                'materials' => '',
-                'topdashboard' => '',
-                'topclases' => 'top-menu--active',
-                'topmaterials' => '',
-                'topassignment' => '',
-                'topanggota' => '',
-                'assignments' => '',
-                'topexam' => '',
-                'exam' => '',
-                'profile' => '',
-                'topprofile' => '',
-               // 'data_kode_kelas' => $kelas_kode
-            ];
-        $data['myclass'] = $this->KelasModel->getMyClass(session()->get('email'));
-        $data['classes'] = $this->UserkelasModel->getMyClass(session()->get('email'));
-        $data['data_kode_kelas'] = $kode_kelas;
-        return view('super_user/anggota', $data);
     }
     // END :: ANGGOTA
 }

@@ -109,7 +109,7 @@
                     <h2 class="h1 m-25px-b">Sign In <u class="theme-color">Now!</u></h2>
                     <form action="<?= base_url(); ?>/auth/login" method="post">
                         <div class="form-group">
-                            <label for="email">Username</label>
+                            <label for="email">Email</label>
                             <input type="text" name="email" id="email" class="form-control" value="<?= old('email'); ?>">
                         </div>
                         <div class="form-group">

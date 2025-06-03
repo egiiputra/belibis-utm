@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Models\UserModel;
 use App\Models\MailsettingModel;
 use App\Models\UsertokenModel;
+use App\Models\KelasModel;
+use App\Models\UserkelasModel;
 // use PHPExcel;
 // use PHPExcel_IOFactory;
 
@@ -22,6 +24,8 @@ class Auth extends BaseController
         $this->UserModel = new UserModel();
         $this->MailsettingModel = new MailsettingModel();
         $this->UsertokenModel = new UsertokenModel();
+        $this->KelasModel = new KelasModel();
+        $this->UserkelasModel = new UserkelasModel();
         date_default_timezone_set('Asia/Jakarta');
     }
 
@@ -487,5 +491,34 @@ class Auth extends BaseController
             </script>"
         );
         return redirect()->to('auth');
+    }
+
+    public function isUserPengajar($email, $kelas_kode) {
+        // CEK APAKAH KELAS TERSEBUT ADALAH KELAS YANG DIA BUAT
+        $kelas_saya = $this->KelasModel
+            ->where('kode_kelas', $kelas_kode)
+            ->where('email_user', $email)
+            ->get()->getRowObject();
+
+        if ($kelas_saya != null) {
+            return array(
+                true,
+                $kelas_saya
+            );
+        }
+
+        $kelas_saya = $this->UserkelasModel->getMyClassByCodeAndEmail($kelas_kode, $email);
+        // CEK APAKAH KELAS INI SAYA AJAR
+        if ($kelas_saya->role == 'pengajar') {
+            return array(
+                true,
+                $kelas_saya
+            );
+        }
+
+        return array(
+            false,
+            $kelas_saya
+        );
     }
 }
